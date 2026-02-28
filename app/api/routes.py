@@ -161,7 +161,7 @@ def handle_event(
                 },
             }
 
-                else:
+        else:
             raise HTTPException(status_code=400, detail="Invalid event type")
 
     except AccountNotFound:
