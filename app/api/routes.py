@@ -1,7 +1,8 @@
 from fastapi import APIRouter, HTTPException, Depends
-from fastapi.responses import PlainTextResponse
+from fastapi.responses import PlainTextResponse, JSONResponse
 from pydantic import BaseModel
 from typing import Optional
+
 
 from app.services.account_service import AccountService
 from app.infrastructure.in_memory_account_repository import InMemoryAccountRepository
@@ -114,9 +115,8 @@ def handle_event(
         - 404: If the account is not found or there are insufficient funds.
     """
     try:
-        event_type = event.type
 
-        if event_type == "deposit":
+        if event.type == "deposit":
             account = service.deposit(
                 destination_id=event.destination,
                 amount=event.amount,
@@ -128,7 +128,7 @@ def handle_event(
                 }
             }
 
-        elif event_type == "withdraw":
+        elif event.type  == "withdraw":
             account = service.withdraw(
                 origin_id=event.origin,
                 amount=event.amount,
@@ -165,10 +165,10 @@ def handle_event(
             raise HTTPException(status_code=400, detail="Invalid event type")
 
     except AccountNotFound:
-        raise HTTPException(status_code=404, detail=0)
+        return JSONResponse(status_code=404, content=0)
 
     except InsufficientFunds:
-        raise HTTPException(status_code=404, detail=0)
+        return JSONResponse(status_code=404, content=0)
 
     except NegativeValue:
         raise HTTPException(status_code=400, detail="Amount must be positive")
