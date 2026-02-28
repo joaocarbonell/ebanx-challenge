@@ -115,9 +115,8 @@ def handle_event(
         - 404: If the account is not found or there are insufficient funds.
     """
     try:
-        event_type = event.type
 
-        if event_type == "deposit":
+        if event.type == "deposit":
             account = service.deposit(
                 destination_id=event.destination,
                 amount=event.amount,
@@ -129,7 +128,7 @@ def handle_event(
                 }
             }
 
-        elif event_type == "withdraw":
+        elif event.type  == "withdraw":
             account = service.withdraw(
                 origin_id=event.origin,
                 amount=event.amount,
@@ -162,7 +161,7 @@ def handle_event(
                 },
             }
 
-        else:
+                else:
             raise HTTPException(status_code=400, detail="Invalid event type")
 
     except AccountNotFound:
